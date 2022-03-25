@@ -1,11 +1,15 @@
 import { createMachine } from 'xstate';
 
-type TrafficLightEvent = { type: 'NEXT' };
+type TrafficLightEvent =
+  | { type: 'NEXT' }
+  | { type: 'TURN_OFF' }
+  | { type: 'TURN_ON' };
 
 type TraffiLightState =
-  | { value: 'green'; context: undefined }
-  | { value: 'yellow'; context: undefined }
-  | { value: 'red'; context: undefined };
+  | { value: { ON: 'green' }; context: undefined }
+  | { value: { ON: 'yellow' }; context: undefined }
+  | { value: { ON: 'red' }; context: undefined }
+  | { value: 'OFF'; context: undefined };
 
 export const trafficLightMachine = createMachine<
   undefined, // We don’t have context, so we type it as undefined
@@ -13,16 +17,40 @@ export const trafficLightMachine = createMachine<
   TraffiLightState
 >({
   id: 'trafficLight',
-  initial: 'red',
+  initial: 'OFF',
   states: {
-    green: {
-      on: { NEXT: 'yellow' }
+    // green: {
+    //   on: { NEXT: 'yellow' },
+    //   after: {
+    //     3500: 'yellow'
+    //   }
+    // },
+    ON: {
+      on: { TURN_OFF: 'OFF' },
+      initial: 'red',
+      states: {
+        green: {
+          on: { NEXT: 'yellow' },
+          after: {
+            3500: 'yellow'
+          }
+        },
+        yellow: {
+          on: { NEXT: 'red' },
+          after: {
+            1500: 'red'
+          }
+        },
+        red: {
+          on: { NEXT: 'green' },
+          after: {
+            5000: 'green'
+          }
+        }
+      }
     },
-    yellow: {
-      on: { NEXT: 'red' }
-    },
-    red: {
-      on: { NEXT: 'green' }
+    OFF: {
+      on: { TURN_ON: 'ON' }
     }
   }
 });

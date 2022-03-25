@@ -15,21 +15,24 @@ const Main = () => {
           type="radio"
           readOnly
           className="red"
-          checked={current.matches('red')}
+          // checked={current.matches('red')}
+          checked={current.matches({ ON: 'red' })}
         />
         <S.Light
           type="radio"
           readOnly
           className="yellow"
-          checked={current.matches('yellow')}
+          checked={current.matches({ ON: 'yellow' })}
         />
         <S.Light
           type="radio"
           readOnly
           className="green"
-          checked={current.matches('green')}
+          checked={current.matches({ ON: 'green' })}
         />
         <button onClick={() => send('NEXT')}>NEXT</button>
+        <button onClick={() => send('TURN_ON')}>TURN ON</button>
+        <button onClick={() => send('TURN_OFF')}>TURN OFF</button>
       </S.TrafficLight>
     </S.Container>
   );
